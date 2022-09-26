@@ -1,0 +1,211 @@
+'''
+EJERCICIO ARBOLES CLASES 4-5-6
+'''
+
+import csv
+from collections import Counter
+import os
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+#%%
+#4.13
+def leer_parque(nombre_archivo, parque):
+    lista_arboles=[]
+    with open (nombre_archivo, 'rt', encoding='utf8') as f:
+        filas=csv.reader(f)
+        encabezados=next(filas)
+        for n_fila, fila in enumerate(filas, start=1):
+            registro=dict(zip(encabezados,fila)) #Creo el diccionario
+            if registro['espacio_ve'] == parque:
+                lista_arboles.append(registro) #suma los datos del parque que seleccione a la list. Mete el diccionario a la lista 
+    return lista_arboles 
+
+'''
+Se tiene que ver asi= [{
+  informacion 
+    }]
+'''
+
+#%%
+#4.14
+
+
+def especies(lista_arboles):
+
+    lista_especies=[]
+    for arbol in lista_arboles:
+        lista_especies.append(arbol['nombre_com'])
+    conjunto_especies=set(lista_especies)
+    return conjunto_especies 
+
+
+#%%
+#4.15
+def contar_ejemplares(lista_arboles):
+    contador=Counter()
+    for arbol in lista_arboles:
+        contador[arbol['nombre_com']] += 1  
+
+    return contador
+'''fijarse que agarra ARBOL (que puede ser cualquier letra o
+palabra) dentro de lista_arboles devolviendo la cantidad de especies en la lista. Por ejemplo
+si arbol tiene el valor Casuarina 3 veces va a quedar el valor Casuarina: 3 Esto queda asi por la clase 
+Counter como dice su explicacion: Counter is an unordered collection where elements are stored as Dict 
+keys and their count as dict value.'''
+
+
+#%%
+#4.16
+def obtener_alturas(lista_arboles, especies):
+    lista_alturas=[]
+    for arbol in lista_arboles:
+        if arbol['nombre_com'] == especies:
+            lista_alturas.append(float(arbol['altura_tot']))
+    return lista_alturas
+
+#%%
+#4.17
+
+
+def obtener_inclinaciones(lista_arboles, especie):
+    lista_inclinaciones = []
+    for arbol in lista_arboles:
+        if arbol['nombre_com'] == especie:
+            lista_inclinaciones.append(float(arbol['inclinacio']))
+    return lista_inclinaciones
+
+#%%
+#4.18
+def especimen_mas_inclinado(lista_arboles, parque):
+    especimen=()
+    inclinacion_max=0.0
+    for arbol in lista_arboles:
+        if float(arbol['inclinacio']) > inclinacion_max:
+            inclinacion_max=float(arbol['inclinacio'])
+            especimen=(arbol['nombre_com'],arbol['inclinacio'])
+    return especimen
+
+
+#GENERAL PAZ ('Macrocarpa (Ciprés de Monterrey o Ciprés de Lambert)', '70')
+#Los andes ('Macrocarpa (Ciprés de Monterrey o Ciprés de Lambert)', '70')
+#Centenario ('Macrocarpa (Ciprés de Monterrey o Ciprés de Lambert)', '70')
+#RARO
+
+#%%
+#4.19
+
+def especie_promedio_mas_inclinada(lista_arboles):
+    especie_promedio = ()
+    lista_de_especies = especies(lista_arboles)
+    lista_especie = list(lista_de_especies)
+    promedio_total = 0.0
+    for especie in lista_especie:
+        contador = 0
+        suma_inclinaciones = 0.0
+        for arbol in listado_arboles:
+            if arbol['nombre_com'] == especie:
+                contador += 1
+                suma_inclinaciones += float(arbol['inclinacio'])
+                promedio = suma_inclinaciones / contador
+        if promedio > promedio_total:
+            especie_promedio = (especie, promedio)
+            promedio_total = promedio
+    return especie_promedio
+
+
+
+
+#%%
+#5.15
+
+def leer_arboles(nombre_archivo, especie):
+    arboleda = []
+    with open(nombre_archivo,encoding = 'utf-8') as file:
+        filas = csv.reader(file)
+        encabezados = next (filas)
+        for fila in filas:
+            registro = dict(zip(encabezados,fila))
+            arboleda.append(registro)
+    return arboleda
+
+#muy parecido al 4.13
+
+#%%
+#5.16
+
+def altura_especie(arboleda, especie):
+    lista=[]
+    altura = [float(arbol['altura_tot']) for arbol in arboleda if arbol['nombre_com'] == especie]
+    lista.append(altura)
+    return altura
+
+
+#%%
+#5.17
+
+def altura_diametro(arboleda,especie):
+    
+    lista=[]
+    
+    altura = [float(arbol['altura_tot']) for arbol in arboleda if arbol['nombre_com'] == especie]
+    diametro =[float(arbol['diametro']) for arbol in arboleda if arbol['nombre_com'] == especie]
+    diametro_altura = list(zip(altura,diametro))
+    lista.append(diametro_altura)
+    return diametro_altura
+
+
+#%%
+
+#5.18
+def medida_de_especies(arboleda,especies):
+    especies = ['Eucalipto', 'Palo borracho rosado', 'Jacarandá']
+    dicc={}
+    
+    for especie in especies:
+        altura = [float(arbol['altura_tot']) for arbol in arboleda if arbol['nombre_com'] == especie]
+        diametro =[float(arbol['diametro']) for arbol in arboleda if arbol['nombre_com'] == especie]
+        diametro_altura = list(zip(altura,diametro))
+        dicc[especie] = (altura, diametro) #en dicc no podemos usar append entonces usamos 'mydict['item'] = input_value'
+
+    return dicc
+
+
+
+
+#%%
+#6.11
+
+def scatter_1(lista_de_pares):
+    pares = np.array(lista_de_pares)
+    h = pares[:,0].copy()
+    d = pares[:,1].copy()
+    plt.figure()
+    plt.scatter(d,h,alpha = 0.4,s=15,c="blue")
+    plt.xlim(0)
+    plt.ylim(0)
+    plt.xlabel("Diametro (cm)",fontweight='bold')
+    plt.ylabel("Altura (m)",fontweight='bold')
+    plt.title("Relacion diametro-altura para Jacarandas",fontweight='bold')
+    return plt.show()
+
+plt.close('all')
+scatter_1(lista_de_pares) #no se por que me marca error pero anda 
+
+
+
+
+
+
+#%%
+
+#Para ahorrar tiempo de escritura:
+    
+especie = 'Jacaranda'
+nombre_archivo=('../Data/arboles.csv')
+lista_arboles=leer_parque('../Data/arboles.csv', 'GENERAL PAZ')
+listado_arboles=leer_parque('../Data/arboles.csv', 'GENERAL PAZ')
+arboleda=leer_arboles('../Data/arboles.csv')
+lista_de_pares = altura_diametro(arboleda,especie)
+
